@@ -1,0 +1,277 @@
+html, body {
+  margin: 0; padding: 0;
+  background: transparent;
+  overflow: hidden;
+  user-select: none;
+  font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+}
+
+#petHouse {
+  position: absolute;
+  inset: 0;
+  border: 2px solid rgba(180, 200, 220, 0.25);
+  border-radius: 16px;
+  pointer-events: none;
+  box-sizing: border-box;
+}
+
+/* 테두리 resize strip — drag로 창 크기 조절 */
+.house-edge {
+  position: absolute;
+  z-index: 10;
+  /* 시각적으로 거의 보이지 않지만 클릭 영역 확보 */
+}
+.e-top    { top: 0;    left: 12px;  right: 12px; height: 6px;  cursor: ns-resize; }
+.e-bot    { bottom: 0; left: 12px;  right: 12px; height: 6px;  cursor: ns-resize; }
+.e-left   { left: 0;   top: 12px;   bottom: 12px; width: 6px;  cursor: ew-resize; }
+.e-right  { right: 0;  top: 12px;   bottom: 12px; width: 6px;  cursor: ew-resize; }
+.e-tl { top: 0; left: 0; width: 14px; height: 14px; cursor: nwse-resize; }
+.e-tr { top: 0; right: 0; width: 14px; height: 14px; cursor: nesw-resize; }
+.e-bl { bottom: 0; left: 0; width: 14px; height: 14px; cursor: nesw-resize; }
+.e-br { bottom: 0; right: 0; width: 14px; height: 14px; cursor: nwse-resize; }
+
+#pet {
+  position: absolute;
+  /* left/top은 renderer.js가 직접 설정 — 창 내부에서 이동 */
+  width: 60px;
+  height: 42px;
+  image-rendering: pixelated;
+  cursor: grab;
+  transition: transform 0s;
+}
+
+#pet.jump {
+  animation: petJump 0.35s ease-out;
+}
+
+@keyframes petJump {
+  0%   { transform: translateY(0); }
+  50%  { transform: translateY(-18px); }
+  100% { transform: translateY(0); }
+}
+
+#pet:active { cursor: grabbing; }
+
+.bubble {
+  position: fixed;
+  /* top/left set via JS in showBubble() — anchored above pet canvas */
+  transform: translateX(-50%);
+  max-width: 240px;
+  background: white;
+  border: 2px solid #333;
+  border-radius: 10px;
+  padding: 4px 8px;
+  font-size: 12px;
+  color: #222;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.bubble.thought {
+  border-style: dashed;
+  background: #f5f5f5;
+}
+
+.hidden { display: none !important; }
+
+.close-btn {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 22px;
+  height: 22px;
+  border: none;
+  background: transparent;
+  color: #666;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  border-radius: 4px;
+  -webkit-app-region: no-drag;
+  font-family: inherit;
+  padding: 0;
+}
+
+.close-btn:hover {
+  background: #f0f0f0;
+  color: #d32f2f;
+}
+
+.status {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0,0,0,0.75);
+  color: white;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+/* 서버 입력 */
+.server-screen {
+  position: absolute;
+  left: 0; top: 0; right: 0; bottom: 0;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+  border: 1px solid #d0d0d0;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  -webkit-app-region: drag;
+}
+
+.server-title {
+  color: #222;
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+.server-desc {
+  color: #666;
+  font-size: 11px;
+  margin-bottom: 14px;
+}
+
+.server-input {
+  -webkit-app-region: no-drag;
+  width: 100%;
+  max-width: 320px;
+  padding: 7px 9px;
+  font-size: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #f5f5f5;
+  color: #222;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+.server-input:focus {
+  outline: none;
+  border-color: #4a90e2;
+}
+
+.server-btn {
+  -webkit-app-region: no-drag;
+  padding: 7px 22px;
+  font-size: 12px;
+  border: none;
+  border-radius: 4px;
+  background: #4a90e2;
+  color: white;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.server-btn:hover { background: #357abd; }
+
+.server-link {
+  -webkit-app-region: no-drag;
+  background: transparent;
+  border: none;
+  color: #888;
+  font-size: 10px;
+  cursor: pointer;
+  margin-top: 8px;
+  padding: 2px 6px;
+  font-family: inherit;
+}
+
+.server-link:hover {
+  color: #d32f2f;
+  text-decoration: underline;
+}
+
+.server-error {
+  color: #d32f2f;
+  font-size: 11px;
+  margin-top: 10px;
+  text-align: center;
+  max-width: 320px;
+}
+
+/* 캐릭터 선택 */
+.select-screen {
+  position: absolute;
+  left: 0; top: 0; right: 0; bottom: 0;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+  box-sizing: border-box;
+  border: 1px solid #d0d0d0;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  -webkit-app-region: drag;
+}
+
+.select-title {
+  color: #222;
+  font-size: 13px;
+  font-weight: bold;
+  margin-bottom: 8px;
+  width: 100%;
+  text-align: center;
+}
+
+.select-error {
+  color: #d32f2f;
+  font-size: 10px;
+  text-align: center;
+  margin-bottom: 6px;
+  width: 100%;
+}
+
+.select-grid {
+  flex: 1;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
+  gap: 4px;
+  overflow-y: auto;
+  -webkit-app-region: no-drag;
+}
+
+.select-card {
+  aspect-ratio: 1;
+  background: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 4px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #222;
+  font-size: 10px;
+  transition: background 0.15s;
+  -webkit-app-region: no-drag;
+}
+
+.select-card:hover {
+  background: #e8e8e8;
+}
+
+.select-card canvas {
+  width: 48px;
+  height: 34px;
+  image-rendering: pixelated;
+}
+
+.select-card .name {
+  margin-top: 2px;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

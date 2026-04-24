@@ -1,0 +1,30 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# User data
+users.json
+env.config
+
+# Logs
+*.log
+nohup.out
+
+# Claude Code local settings
+.claude/
+
+# Built binaries (cp'd to repo root)
+*.exe
+*.dmg
+*.AppImage
+
+# OS noise
+.DS_Store
+Thumbs.db

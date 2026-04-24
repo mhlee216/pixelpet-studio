@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <title>PixelPet</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="status" class="status hidden">로딩 중...</div>
+
+  <div id="serverScreen" class="server-screen">
+    <button class="close-btn" id="serverClose" title="종료">×</button>
+    <div class="server-title">PixelPet 서버 연결</div>
+    <div class="server-desc">Studio 서버 URL을 입력하세요</div>
+    <input id="serverInput" type="text" placeholder="https://...ngrok-free.dev" class="server-input" list="urlHistory" autocomplete="off" />
+    <datalist id="urlHistory"></datalist>
+    <button id="serverConnect" class="server-btn">연결</button>
+    <button id="clearHistory" class="server-link hidden">저장된 URL 비우기</button>
+    <div id="serverError" class="server-error hidden"></div>
+  </div>
+
+  <div id="selectScreen" class="select-screen hidden">
+    <button class="close-btn" id="selectClose" title="종료">×</button>
+    <div class="select-title">캐릭터 선택</div>
+    <div id="selectError" class="select-error hidden"></div>
+    <div id="selectGrid" class="select-grid"></div>
+  </div>
+
+  <div id="petHouse" class="hidden"></div>
+  <div id="edgeT" class="house-edge e-top hidden"></div>
+  <div id="edgeB" class="house-edge e-bot hidden"></div>
+  <div id="edgeL" class="house-edge e-left hidden"></div>
+  <div id="edgeR" class="house-edge e-right hidden"></div>
+  <div id="edgeTL" class="house-edge e-tl hidden"></div>
+  <div id="edgeTR" class="house-edge e-tr hidden"></div>
+  <div id="edgeBL" class="house-edge e-bl hidden"></div>
+  <div id="edgeBR" class="house-edge e-br hidden"></div>
+  <canvas id="pet" width="60" height="42" class="hidden"></canvas>
+  <div id="bubble" class="bubble hidden"></div>
+
+  <script src="colors.js"></script>
+  <script src="renderer.js"></script>
+</body>
+</html>

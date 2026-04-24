@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>PixelPet Studio - Login</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #f5fbff; color: #333; font-family: 'Segoe UI', sans-serif;
+       display: flex; align-items: center; justify-content: center; height: 100vh; }
+.login-box { background: #fff; border: 1px solid #ddd; border-radius: 12px;
+             padding: 40px; width: 320px; text-align: center; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+.login-box h1 { font-size: 20px; margin-bottom: 6px; }
+.login-box p { font-size: 13px; color: #888; margin-bottom: 24px; }
+.field { margin-bottom: 14px; text-align: left; }
+.field label { font-size: 12px; color: #666; display: block; margin-bottom: 4px; }
+.field input, .field select { width: 100%; padding: 10px 12px; border: 1px solid #ccc; border-radius: 6px;
+               font-size: 14px; outline: none; }
+.field input:focus, .field select:focus { border-color: #1976d2; }
+.login-btn { width: 100%; padding: 12px; border: none; border-radius: 6px;
+             background: #bbdefb; color: #333; font-size: 14px; font-weight: bold;
+             cursor: pointer; margin-top: 8px; }
+.login-btn:hover { background: #90caf9; }
+.error { color: #e44; font-size: 12px; margin-top: 12px; display: none; }
+</style>
+</head>
+<body>
+
+<div class="login-box">
+  <h1>PixelPet Studio</h1>
+  <p>로그인하여 편집을 시작하세요</p>
+  <form id="loginForm" onsubmit="return doLogin(event)">
+    <div class="field">
+      <label>사용자</label>
+      <select id="username" required autocomplete="username">
+        <option value="" disabled selected>사용자 선택</option>
+        <option value="Master">Master</option>
+        <option value="Editor 1">Editor 1</option>
+        <option value="Editor 2">Editor 2</option>
+        <option value="Editor 3">Editor 3</option>
+        <option value="Editor 4">Editor 4</option>
+        <option value="Editor 5">Editor 5</option>
+        <option value="Editor 6">Editor 6</option>
+        <option value="Editor 7">Editor 7</option>
+        <option value="Editor 8">Editor 8</option>
+        <option value="Editor 9">Editor 9</option>
+        <option value="Editor 10">Editor 10</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>비밀번호</label>
+      <input type="password" id="password" autocomplete="current-password" required>
+    </div>
+    <button class="login-btn" type="submit">로그인</button>
+  </form>
+  <div class="error" id="error">사용자 이름 또는 비밀번호가 틀렸습니다.</div>
+</div>
+
+<script>
+// 이미 로그인된 경우 에디터로 이동
+fetch('/me').then(r => { if (r.ok) window.location.href = '/editor.html'; });
+
+async function doLogin(e) {
+  e.preventDefault();
+  const username = document.getElementById('username').value.trim();
+  const password = document.getElementById('password').value;
+  const res = await fetch('/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username, password }),
+  });
+  if (res.ok) {
+    window.location.href = '/editor.html';
+  } else {
+    document.getElementById('error').style.display = 'block';
+  }
+}
+</script>
+</body>
+</html>
